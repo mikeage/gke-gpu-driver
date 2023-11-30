@@ -39,21 +39,40 @@ spec:
             - matchExpressions:
               - key: cloud.google.com/gke-accelerator
                 operator: Exists
+              - key: cloud.google.com/gke-gpu-driver-version
+                operator: DoesNotExist
       tolerations:
       - operator: "Exists"
-      volumes:
-      - name: dev
-        hostPath:
-          path: /dev
+      volumes:      
       - name: nvidia-install-dir-host
         hostPath:
           path: /home/kubernetes/bin/nvidia
+      - name: dev
+        hostPath:
+          path: /dev
+      - name: boot
+        hostPath:
+          path: /boot
       - name: root-mount
         hostPath:
           path: /
       initContainers:
-      - image: <theImageYouBuilt>
+      - image: gke-nvidia-installer:fixed
         name: nvidia-driver-installer
+        resources:
+          requests:
+            cpu: 150m
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: boot
+          mountPath: /boot
+        - name: dev
+          mountPath: /dev
+        - name: root-mount
+          mountPath: /root
+      - image: <image name of additional-lib build>
+        name: nvidia-encode-installer
         resources:
           requests:
             cpu: 150m
