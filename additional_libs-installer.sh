@@ -59,8 +59,14 @@ configure_nvidia_installation_dirs() {
   echo "Configuring installation directories... DONE."
 }
 installLib(){
-  apt-get update
-  apt-get install -y libnvidia-encode-470-server
+  SHIPPED_NVIDIA_DRIVER_VERSION="$(cat /var/lib/nvidia/shipped-nvidia-version)"
+  echo "NVIDIA driver is $SHIPPED_NVIDIA_DRIVER_VERSION"
+  apt update
+  UBUNTU_PACKAGE_VERSION="$(apt list libnvidia-cfg1-470 -a | grep $SHIPPED_NVIDIA_DRIVER_VERSION | awk '{print $2}')"
+  echo "Ubuntu package version is $UBUNTU_PACKAGE_VERSION"
+  apt install -y --no-install-recommends libnvidia-cfg1-470=$UBUNTU_PACKAGE_VERSION libnvidia-encode-470=$UBUNTU_PACKAGE_VERSION libnvidia-compute-470=$UBUNTU_PACKAGE_VERSION libnvidia-decode-470=$UBUNTU_PACKAGE_VERSION
+  export DEBIAN_FRONTEND=noninteractive
+  apt install -y --no-install-recommends xserver-xorg-video-nvidia-470=$UBUNTU_PACKAGE_VERSION
 }
 
 main() {
