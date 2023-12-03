@@ -60,20 +60,6 @@ spec:
         hostPath:
           path: /var/lib/nvidia/
       initContainers:
-      - image: gke-nvidia-installer:fixed
-        name: nvidia-driver-installer
-        resources:
-          requests:
-            cpu: 150m
-        securityContext:
-          privileged: true
-        volumeMounts:
-        - name: boot
-          mountPath: /boot
-        - name: dev
-          mountPath: /dev
-        - name: root-mount
-          mountPath: /root
       - image: europe-west1-docker.pkg.dev/hyperscale-dev-rru1/hyperscale/additional-lib:0.0.3-0
         name: nvidia-additional-installer
         resources:
@@ -97,6 +83,20 @@ spec:
           mountPath: /root
         - name: var-lib-nvidia
           mountPath: /var/lib/nvidia/
+      - image: gke-nvidia-installer:fixed
+        name: nvidia-driver-installer
+        resources:
+          requests:
+            cpu: 150m
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: boot
+          mountPath: /boot
+        - name: dev
+          mountPath: /dev
+        - name: root-mount
+          mountPath: /root
       containers:
       - image: "gcr.io/google-containers/pause:2.0"
         name: pause
