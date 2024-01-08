@@ -65,10 +65,11 @@ installLib(){
   UBUNTU_PACKAGE_VERSION="$(apt list libnvidia-cfg1-470 -a | grep $SHIPPED_NVIDIA_DRIVER_VERSION | awk '{print $2}')"
   echo "Ubuntu package version is $UBUNTU_PACKAGE_VERSION"
   export DEBIAN_FRONTEND=noninteractive
-  apt download libnvidia-cfg1-470=$UBUNTU_PACKAGE_VERSION libnvidia-encode-470=$UBUNTU_PACKAGE_VERSION libnvidia-compute-470=$UBUNTU_PACKAGE_VERSION libnvidia-decode-470=$UBUNTU_PACKAGE_VERSION xserver-xorg-video-nvidia-470=$UBUNTU_PACKAGE_VERSION
+  apt download libnvidia-cfg1-470=$UBUNTU_PACKAGE_VERSION libnvidia-encode-470=$UBUNTU_PACKAGE_VERSION libnvidia-compute-470=$UBUNTU_PACKAGE_VERSION libnvidia-decode-470=$UBUNTU_PACKAGE_VERSION xserver-xorg-video-nvidia-470=$UBUNTU_PACKAGE_VERSION libnvidia-gl-470=$UBUNTU_PACKAGE_VERSION libnvidia-common-470=$UBUNTU_PACKAGE_VERSION
   dpkg --force-all --install *.deb
-  # apt install -y --no-install-recommends libnvidia-cfg1-470=$UBUNTU_PACKAGE_VERSION libnvidia-encode-470=$UBUNTU_PACKAGE_VERSION libnvidia-compute-470=$UBUNTU_PACKAGE_VERSION libnvidia-decode-470=$UBUNTU_PACKAGE_VERSION
-  # apt install -y --no-install-recommends xserver-xorg-video-nvidia-470=$UBUNTU_PACKAGE_VERSION
+  # These files need to be copied directly to the host, rather than put in $NVIDIA_INSTALL_DIR_CONTAINER
+  cp -a /etc/OpenCL /tmp/etc/
+  cp -a /usr/share/vulkan/icd.d/* /tmp/share/vulkan/icd.d/
 }
 
 main() {

@@ -44,6 +44,12 @@ spec:
       tolerations:
       - operator: "Exists"
       volumes:
+      - name: etc
+        hostPath:
+          path: /etc
+      - name: share
+        hostPath:
+          path: /usr/share/
       - name: nvidia-install-dir-host
         hostPath:
           path: /home/kubernetes/bin/nvidia
@@ -60,7 +66,7 @@ spec:
         hostPath:
           path: /var/lib/nvidia/
       initContainers:
-      - image: europe-west1-docker.pkg.dev/hyperscale-dev-rru1/hyperscale/additional-lib:0.0.3-0
+      - image: europe-west1-docker.pkg.dev/hyperscale-dev-rru1/hyperscale/additional-lib:0.0.4-0
         name: nvidia-additional-installer
         resources:
           requests:
@@ -83,6 +89,10 @@ spec:
           mountPath: /root
         - name: var-lib-nvidia
           mountPath: /var/lib/nvidia/
+        - name: etc
+          mountPath: /tmp/etc
+        - name: share
+          mountPath: /tmp/share
       - image: gke-nvidia-installer:fixed
         name: nvidia-driver-installer
         resources:
